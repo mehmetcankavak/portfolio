@@ -130,7 +130,7 @@ const SKILLS = [
 ]
 
 const SOCIALS = [
-  { icon: SiInstagram, href: 'https://instagram.com/', label: 'Instagram' },
+  { icon: SiInstagram, href: 'https://instagram.com/mehmetcankvak', label: 'Instagram' },
   { icon: FaLinkedinIn, href: 'https://linkedin.com/', label: 'LinkedIn' },
   { icon: SiGithub, href: 'https://github.com/mehmetcankavak', label: 'GitHub' },
 ]
@@ -159,12 +159,12 @@ function Header() {
   }, [])
   return (
     <header className={`fixed inset-x-0 top-0 z-30 transition-all duration-300 ${scrolled ? 'bg-bg-0/80 py-3 backdrop-blur-md' : 'py-5'}`}>
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6">
-        <a href="#home" className="text-lg font-semibold tracking-tight">Mehmet Can Kavak</a>
-        <ul className="hidden items-center gap-9 text-sm text-muted md:flex">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 font-display">
+        <a href="#home" className="text-lg font-bold tracking-tight">Mehmet Can Kavak</a>
+        <ul className="hidden items-center gap-9 text-xs font-medium tracking-[0.12em] text-muted uppercase md:flex">
           {NAV.map((n) => (<li key={n.href}><a href={n.href} className="transition-colors hover:text-ink">{n.label}</a></li>))}
         </ul>
-        <a href="#contact" className="btn-invert rounded-full px-5 py-2.5 text-sm font-semibold transition-colors">Contact Me</a>
+        <a href="#contact" className="btn-invert rounded-full px-5 py-2.5 text-xs font-semibold tracking-[0.1em] uppercase transition-colors">Contact Me</a>
       </nav>
     </header>
   )
@@ -177,18 +177,17 @@ function Hero() {
     <section id="home" className="relative overflow-hidden">
       <div className="hero-glow pointer-events-none absolute inset-0 -z-10" />
       <div className="mx-auto flex max-w-3xl flex-col items-center px-6 pt-40 pb-16 text-center sm:pt-48">
-        <motion.p {...fadeUp()} className="mb-6 flex items-center gap-2 text-sm text-muted">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-white/70" />
-          Hi! I'm Mehmet Can — Based in Turkey 🇹🇷
+        <motion.p {...fadeUp()} className="mb-6 font-display text-sm font-medium tracking-[0.14em] text-faint uppercase">
+          Hi! I'm Mehmet Can — Based in Turkey
         </motion.p>
 
-        <motion.h1 {...fadeUp(0.08)} className="text-5xl leading-[1.06] font-extrabold tracking-tight sm:text-7xl">
+        <motion.h1 {...fadeUp(0.08)} className="font-display text-5xl leading-[1.06] font-bold tracking-tight sm:text-7xl">
           Backend Developer &
           <br />
           <span className="type-cursor text-muted">{typed}</span>
         </motion.h1>
 
-        <motion.p {...fadeUp(0.16)} className="mt-7 max-w-xl text-lg text-muted">
+        <motion.p {...fadeUp(0.16)} className="mt-7 max-w-xl text-lg text-white/85">
           I build systems and infrastructure that solve real problems —
           from writing the code to running it in production.
         </motion.p>
@@ -385,13 +384,30 @@ function Skills() {
 /* ── Contact ────────────────────────────────────────────────── */
 function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
-  const submit = (e) => {
+  const [status, setStatus] = useState('idle') // idle | sending | sent | error
+  const submit = async (e) => {
     e.preventDefault()
-    const subject = encodeURIComponent(`Portfolio — message from ${form.name || 'someone'}`)
-    const body = encodeURIComponent(`${form.message}\n\n— ${form.name} (${form.email})`)
-    window.location.href = `mailto:mckavak10@gmail.com?subject=${subject}&body=${body}`
+    setStatus('sending')
+    try {
+      const res = await fetch('https://formsubmit.co/ajax/mckavak10@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          _subject: `Portfolio — message from ${form.name || 'someone'}`,
+          _template: 'table',
+        }),
+      })
+      if (!res.ok) throw new Error('failed')
+      setStatus('sent')
+      setForm({ name: '', email: '', message: '' })
+    } catch {
+      setStatus('error')
+    }
   }
-  const field = 'w-full rounded-2xl border border-line bg-card px-4 py-3.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-white/30'
+  const field = 'w-full rounded-2xl border border-line bg-card px-4 py-3.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-white/30 disabled:opacity-60'
   const info = [
     { icon: Mail, label: 'Email', value: 'mckavak10@gmail.com', href: 'mailto:mckavak10@gmail.com' },
     { icon: Phone, label: 'Phone', value: '0534 364 67 19', href: 'tel:+905343646719' },
@@ -403,12 +419,14 @@ function Contact() {
         <Heading id="contact" kicker="Get in Touch" plain="Contact" strong="Me" />
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
           <motion.form {...fadeUp()} onSubmit={submit} className="space-y-4">
-            <input required placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={field} />
-            <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={field} />
-            <textarea required rows={5} placeholder="Message" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className={`${field} resize-none`} />
-            <button type="submit" className="btn-invert inline-flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-sm font-semibold transition-colors">
-              Send Message <ArrowRight size={16} />
+            <input required placeholder="Name" value={form.name} disabled={status === 'sending'} onChange={(e) => setForm({ ...form, name: e.target.value })} className={field} />
+            <input required type="email" placeholder="Email" value={form.email} disabled={status === 'sending'} onChange={(e) => setForm({ ...form, email: e.target.value })} className={field} />
+            <textarea required rows={5} placeholder="Message" value={form.message} disabled={status === 'sending'} onChange={(e) => setForm({ ...form, message: e.target.value })} className={`${field} resize-none`} />
+            <button type="submit" disabled={status === 'sending'} className="btn-invert inline-flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-sm font-semibold transition-colors disabled:opacity-70">
+              {status === 'sending' ? 'Sending…' : status === 'sent' ? 'Message Sent ✓' : (<>Send Message <ArrowRight size={16} /></>)}
             </button>
+            {status === 'sent' && <p className="text-sm text-white/80">Thanks! Your message has been sent — I'll get back to you soon.</p>}
+            {status === 'error' && <p className="text-sm text-red-400/90">Something went wrong. Please email me directly at mckavak10@gmail.com.</p>}
           </motion.form>
 
           <div className="flex flex-col gap-4">
