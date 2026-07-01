@@ -159,12 +159,12 @@ function Header() {
   }, [])
   return (
     <header className={`fixed inset-x-0 top-0 z-30 transition-all duration-300 ${scrolled ? 'bg-bg-0/80 py-3 backdrop-blur-md' : 'py-5'}`}>
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 font-display">
-        <a href="#home" className="text-lg font-bold tracking-tight">Mehmet Can Kavak</a>
-        <ul className="hidden items-center gap-9 text-xs font-medium tracking-[0.12em] text-muted uppercase md:flex">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6">
+        <a href="#home" className="text-lg font-semibold tracking-tight">Mehmet Can Kavak</a>
+        <ul className="hidden items-center gap-9 text-sm font-medium text-muted md:flex">
           {NAV.map((n) => (<li key={n.href}><a href={n.href} className="transition-colors hover:text-ink">{n.label}</a></li>))}
         </ul>
-        <a href="#contact" className="btn-invert rounded-full px-5 py-2.5 text-xs font-semibold tracking-[0.1em] uppercase transition-colors">Contact Me</a>
+        <a href="#contact" className="btn-invert rounded-full px-5 py-2.5 text-sm font-semibold transition-colors">Contact Me</a>
       </nav>
     </header>
   )
@@ -177,11 +177,11 @@ function Hero() {
     <section id="home" className="relative overflow-hidden">
       <div className="hero-glow pointer-events-none absolute inset-0 -z-10" />
       <div className="mx-auto flex max-w-3xl flex-col items-center px-6 pt-40 pb-16 text-center sm:pt-48">
-        <motion.p {...fadeUp()} className="mb-6 font-display text-sm font-medium tracking-[0.14em] text-faint uppercase">
+        <motion.p {...fadeUp()} className="mb-6 text-base font-medium text-white/90">
           Hi! I'm Mehmet Can — Based in Turkey
         </motion.p>
 
-        <motion.h1 {...fadeUp(0.08)} className="font-display text-5xl leading-[1.06] font-bold tracking-tight sm:text-7xl">
+        <motion.h1 {...fadeUp(0.08)} className="text-5xl leading-[1.08] font-bold tracking-tight sm:text-7xl">
           Backend Developer &
           <br />
           <span className="type-cursor text-muted">{typed}</span>
