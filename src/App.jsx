@@ -1,365 +1,550 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Pagination } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/pagination'
 import {
-  Mail, ArrowUpRight, ChevronDown,
-  Server, Cloud, Terminal, Code2, Database, Boxes,
+  Mail, MapPin, ArrowUpRight, ArrowRight, ChevronDown,
+  Server, Cloud, Terminal as TerminalIcon,
 } from 'lucide-react'
+import {
+  SiPython, SiFastapi, SiPostgresql, SiRedis,
+  SiReact, SiVite, SiTailwindcss, SiJavascript,
+  SiTerraform, SiDocker, SiGithubactions, SiGithub,
+} from 'react-icons/si'
+import { FaAws } from 'react-icons/fa'
 
-function Github({ size = 18, className = '' }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.77.12 3.06.74.8 1.18 1.83 1.18 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14 0 1.54-.01 2.79-.01 3.17 0 .3.2.66.79.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
-    </svg>
-  )
+/* ── Daktilo efekti ─────────────────────────────────────────── */
+function useTypewriter(words, { type = 90, del = 45, hold = 1400 } = {}) {
+  const [text, setText] = useState('')
+  const [i, setI] = useState(0)
+  const [deleting, setDeleting] = useState(false)
+
+  useEffect(() => {
+    const current = words[i % words.length]
+    let t
+    if (!deleting && text === current) {
+      t = setTimeout(() => setDeleting(true), hold)
+    } else if (deleting && text === '') {
+      setDeleting(false)
+      setI((v) => v + 1)
+    } else {
+      t = setTimeout(() => {
+        setText(current.slice(0, deleting ? text.length - 1 : text.length + 1))
+      }, deleting ? del : type)
+    }
+    return () => clearTimeout(t)
+  }, [text, deleting, i, words, type, del, hold])
+
+  return text
 }
 
+/* ── Reveal animasyonu ──────────────────────────────────────── */
+function fadeUp(delay = 0) {
+  return {
+    initial: { opacity: 0, y: 26 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.1 },
+    transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] },
+  }
+}
+
+/* ── Veri ───────────────────────────────────────────────────── */
 const NAV = [
+  { href: '#home', label: 'Ana Sayfa' },
   { href: '#work', label: 'Çalışmalar' },
+  { href: '#services', label: 'Neler Yaparım' },
   { href: '#skills', label: 'Yetenekler' },
-  { href: '#contact', label: 'İletişim' },
+]
+
+const MARQUEE = [
+  'Python', 'FastAPI', 'AWS', 'Terraform', 'Docker', 'CI/CD',
+  'PostgreSQL', 'Redis', 'GitHub Actions', 'CloudWatch', 'React', 'IaC',
 ]
 
 const WORK = [
   {
     n: '01',
-    tag: 'Backend',
-    title: 'Gerçek Zamanlı Trading Motoru',
+    img: '/work/work-frontend.png',
+    tag: 'Web · Frontend',
+    title: 'Gerçek Zamanlı Trading Arayüzü',
     detail:
-      'FastAPI + asyncpg üzerinde kurulu backend. Binance, OKX, Bybit ve Hyperliquid için websocket fiyat akışları; haber-varlık eşleştirme (entity resolution) motoru; risk kuralları ve portföy takibi.',
-    tech: ['Python', 'FastAPI', 'PostgreSQL', 'Redis'],
+      'React + Vite ile <50ms gecikmeli, canlı websocket verisiyle çalışan bir trading terminali arayüzü. iOS native uygulamaya paketlendi.',
   },
   {
     n: '02',
-    tag: 'Frontend',
-    title: 'Web ve iOS Arayüzü',
+    img: '/work/work-backend.png',
+    tag: 'Backend · Data',
+    title: 'Çok Borsalı Veri Motoru',
     detail:
-      'React + Vite ile hızlı, gerçek zamanlı bir trading terminali arayüzü. Capacitor ile iOS native uygulamaya paketlendi.',
-    tech: ['React', 'Vite', 'TanStack Query', 'Capacitor'],
+      'FastAPI + asyncpg backend; Binance, OKX, Bybit ve Hyperliquid için websocket akışları, likidasyon/funding/whale takibi ve risk kuralları.',
   },
   {
     n: '03',
-    tag: 'DevOps',
-    title: 'AWS Altyapısı — Sıfırdan Kurulum',
+    img: '/work/work-devops.png',
+    tag: 'DevOps · Cloud',
+    title: 'AWS Altyapısı — IaC & CI/CD',
     detail:
-      'Production Railway üzerinde; paralel bir AWS ortamı EC2 + RDS + ElastiCache üzerine, tamamen Terraform ile kod olarak tanımlı. GitHub Actions ile OIDC tabanlı CI/CD (secret veya SSH gerektirmeden SSM üzerinden deploy). CloudWatch ile metrik, log ve alarm.',
-    tech: ['Terraform', 'GitHub Actions', 'CloudWatch', 'Docker'],
+      'EC2 + RDS + ElastiCache, tamamen Terraform ile kod olarak. GitHub Actions + OIDC ile secretsiz CI/CD, CloudWatch ile metrik, log ve alarm.',
   },
 ]
 
-const WHAT_I_DO = [
+const SERVICES = [
   {
     icon: Server,
     title: 'Backend Geliştirme',
-    detail: 'Python/FastAPI ile API tasarımı, veritabanı modelleme, gerçek zamanlı veri akışları.',
+    tags: ['Python', 'FastAPI', 'asyncpg', 'REST API', 'WebSocket', 'PostgreSQL'],
+    detail:
+      'API tasarımı, veritabanı modelleme ve gerçek zamanlı veri akışları. Ölçeklenebilir, test edilebilir servisler kuruyorum.',
   },
   {
     icon: Cloud,
     title: 'DevOps & Cloud Altyapı',
-    detail: 'AWS üzerinde CI/CD pipeline kurulumu, Infrastructure as Code (Terraform), container orkestrasyon, izleme/alarm sistemleri.',
+    tags: ['AWS', 'Terraform', 'Docker', 'GitHub Actions', 'CloudWatch', 'IAM'],
+    detail:
+      'CI/CD pipeline kurulumu, Infrastructure as Code, container deploy, izleme ve alarm sistemleri — kodu güvenle production’a taşıyorum.',
   },
   {
-    icon: Terminal,
-    title: 'Sürekli Öğrenme',
-    detail: 'Yazılım mühendisliği son sınıf öğrencisiyim — her projeyi DevOps pratiklerini derinleştirmek için bir fırsat olarak kullanıyorum.',
+    icon: TerminalIcon,
+    title: 'Sistem Tasarımı',
+    tags: ['Mimari', 'Ölçeklenebilirlik', 'Güvenlik', 'Least Privilege'],
+    detail:
+      'Küçük ama sağlam sistemler tasarlıyorum: doğru sınırlar, en az yetki prensibi ve gözlemlenebilirlik ilk günden itibaren.',
   },
 ]
 
 const SKILLS = [
   {
-    category: 'Backend',
-    icon: Database,
-    items: ['Python', 'FastAPI', 'asyncpg', 'PostgreSQL', 'Redis'],
+    group: 'Backend',
+    items: [
+      { icon: SiPython, label: 'Python', color: '#4B8BBE' },
+      { icon: SiFastapi, label: 'FastAPI', color: '#009688' },
+      { icon: SiPostgresql, label: 'PostgreSQL', color: '#4169E1' },
+      { icon: SiRedis, label: 'Redis', color: '#FF4438' },
+    ],
   },
   {
-    category: 'Frontend',
-    icon: Code2,
-    items: ['React', 'Vite', 'TanStack Query', 'TailwindCSS'],
+    group: 'Frontend',
+    items: [
+      { icon: SiReact, label: 'React', color: '#61DAFB' },
+      { icon: SiVite, label: 'Vite', color: '#646CFF' },
+      { icon: SiJavascript, label: 'JavaScript', color: '#F7DF1E' },
+      { icon: SiTailwindcss, label: 'Tailwind', color: '#38BDF8' },
+    ],
   },
   {
-    category: 'DevOps / Cloud',
-    icon: Boxes,
-    items: ['AWS (EC2, RDS, ECR, IAM)', 'Terraform', 'Docker', 'GitHub Actions', 'CloudWatch'],
+    group: 'DevOps & Cloud',
+    items: [
+      { icon: FaAws, label: 'AWS', color: '#FF9900' },
+      { icon: SiTerraform, label: 'Terraform', color: '#7B42BC' },
+      { icon: SiDocker, label: 'Docker', color: '#2496ED' },
+      { icon: SiGithubactions, label: 'GitHub Actions', color: '#2088FF' },
+    ],
   },
 ]
 
-function fadeUp(delay = 0) {
-  return {
-    initial: { opacity: 0, y: 24 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: '-80px' },
-    transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] },
-  }
-}
-
-function Section({ id, eyebrow, children, className = '' }) {
+/* ── Bileşenler ─────────────────────────────────────────────── */
+function Heading({ children, id, kicker }) {
   return (
-    <section id={id} className={`mx-auto max-w-5xl px-6 py-24 sm:py-32 ${className}`}>
-      {eyebrow && (
-        <motion.p {...fadeUp()} className="mb-4 text-sm font-medium tracking-widest text-accent uppercase">
-          {eyebrow}
+    <div id={id} className="mb-14 text-center">
+      {kicker && (
+        <motion.p {...fadeUp()} className="mb-3 text-sm font-medium tracking-[0.25em] text-accent uppercase">
+          {kicker}
         </motion.p>
       )}
-      {children}
-    </section>
-  )
-}
-
-function App() {
-  const [openIdx, setOpenIdx] = useState(0)
-
-  return (
-    <div className="relative overflow-hidden">
-      <div className="glow pointer-events-none absolute inset-x-0 top-0 h-[600px]" />
-
-      <header className="fixed top-0 right-0 left-0 z-20 border-b border-line bg-bg-0/70 backdrop-blur-md">
-        <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <a href="#top" className="flex items-center gap-2 text-sm font-medium">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-            Mehmet Can Kavak
-          </a>
-          <ul className="flex gap-7 text-sm text-muted">
-            {NAV.map((n) => (
-              <li key={n.href}>
-                <a href={n.href} className="transition-colors hover:text-ink">
-                  {n.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </header>
-
-      <main id="top" className="relative">
-        {/* Hero */}
-        <section className="mx-auto max-w-5xl px-6 pt-44 pb-28 sm:pt-56 sm:pb-36">
-          <motion.p {...fadeUp()} className="mb-6 flex items-center gap-2 text-sm text-muted">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            Merhaba, ben Mehmet Can — Türkiye merkezli
-          </motion.p>
-
-          <motion.h1
-            {...fadeUp(0.1)}
-            className="text-5xl leading-[1.05] font-extrabold tracking-tight sm:text-7xl"
-          >
-            Backend Geliştiriyor,
-            <br />
-            <span className="text-accent">DevOps'a</span> Geçiyorum.
-          </motion.h1>
-
-          <motion.p {...fadeUp(0.2)} className="mt-8 max-w-xl text-lg text-muted">
-            Yazılım mühendisliği son sınıf öğrencisi. Gerçek bir projeyi (CryptoTerminal)
-            production'a taşıyıp, üzerine CI/CD, Terraform ve cloud izleme kurarak
-            DevOps'u pratikte öğreniyorum.
-          </motion.p>
-
-          <motion.div {...fadeUp(0.3)} className="mt-10 flex items-center gap-6">
-            <a
-              href="#work"
-              className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-bg-0 transition-opacity hover:opacity-90"
-            >
-              Çalışmalarımı Gör
-            </a>
-            <a
-              href="#contact"
-              className="text-sm font-medium text-muted transition-colors hover:text-ink"
-            >
-              İletişime geç →
-            </a>
-          </motion.div>
-        </section>
-
-        {/* Work */}
-        <Section id="work" eyebrow="Çalışmalar">
-          <motion.h2 {...fadeUp()} className="max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
-            CryptoTerminal
-          </motion.h2>
-          <motion.p {...fadeUp(0.05)} className="mt-3 max-w-2xl text-muted">
-            Haber odaklı, gerçek zamanlı bir kripto trading terminali — üç farklı katmanda
-            gerçek mühendislik problemleri çözüldü.
-          </motion.p>
-
-          <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {WORK.map((w, i) => (
-              <motion.div
-                key={w.n}
-                {...fadeUp(0.1 * i)}
-                className="flex flex-col rounded-2xl border border-line bg-bg-2/60 p-6"
-              >
-                <div className="flex items-start justify-between">
-                  <span className="font-mono text-2xl font-bold text-accent">{w.n}</span>
-                  <span className="rounded-full border border-line px-2.5 py-0.5 text-xs text-faint">
-                    {w.tag}
-                  </span>
-                </div>
-                <h3 className="mt-5 text-lg font-semibold">{w.title}</h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{w.detail}</p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {w.tech.map((t) => (
-                    <span
-                      key={t}
-                      className="rounded-md bg-white/5 px-2 py-1 text-xs text-faint"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div {...fadeUp(0.2)} className="mt-8 flex gap-6 text-sm">
-            <a
-              href="https://github.com/mehmetcankavak/TerminalProject"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 font-medium text-ink transition-colors hover:text-accent"
-            >
-              <Github size={16} /> Kaynak Kod <ArrowUpRight size={14} />
-            </a>
-            <a
-              href="https://cryptoterminal-production.up.railway.app"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 font-medium text-ink transition-colors hover:text-accent"
-            >
-              Canlı Demo <ArrowUpRight size={14} />
-            </a>
-          </motion.div>
-        </Section>
-
-        <div className="mx-auto h-px max-w-5xl bg-line" />
-
-        {/* What I do */}
-        <Section eyebrow="Neler Yapıyorum">
-          <div className="divide-y divide-line border-t border-b border-line">
-            {WHAT_I_DO.map((item, i) => {
-              const Icon = item.icon
-              const open = openIdx === i
-              return (
-                <div key={item.title}>
-                  <button
-                    onClick={() => setOpenIdx(open ? -1 : i)}
-                    className="flex w-full items-center justify-between gap-4 py-6 text-left"
-                  >
-                    <span className="flex items-center gap-4">
-                      <Icon size={20} className="text-accent" />
-                      <span className="text-lg font-medium">{item.title}</span>
-                    </span>
-                    <ChevronDown
-                      size={18}
-                      className={`text-faint transition-transform ${open ? 'rotate-180' : ''}`}
-                    />
-                  </button>
-                  {open && (
-                    <motion.p
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className="max-w-2xl pb-6 text-muted"
-                    >
-                      {item.detail}
-                    </motion.p>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </Section>
-
-        <div className="mx-auto h-px max-w-5xl bg-line" />
-
-        {/* Skills */}
-        <Section id="skills" eyebrow="Yetenekler">
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {SKILLS.map((s, i) => {
-              const Icon = s.category === 'Backend' ? Database : s.category === 'Frontend' ? Code2 : Boxes
-              return (
-                <motion.div
-                  key={s.category}
-                  {...fadeUp(0.1 * i)}
-                  className="rounded-2xl border border-line bg-bg-2/60 p-6"
-                >
-                  <div className="flex items-center gap-2.5 text-accent">
-                    <Icon size={18} />
-                    <h3 className="font-semibold text-ink">{s.category}</h3>
-                  </div>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {s.items.map((it) => (
-                      <span
-                        key={it}
-                        className="rounded-md border border-line-soft bg-white/5 px-2.5 py-1 text-xs text-muted"
-                      >
-                        {it}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
-              )
-            })}
-          </div>
-        </Section>
-
-        <div className="mx-auto h-px max-w-5xl bg-line" />
-
-        {/* Contact */}
-        <Section id="contact" eyebrow="İletişim" className="pb-40">
-          <motion.h2 {...fadeUp()} className="max-w-xl text-3xl font-bold tracking-tight sm:text-4xl">
-            Bir proje konuşalım.
-          </motion.h2>
-          <motion.p {...fadeUp(0.1)} className="mt-4 max-w-md text-muted">
-            Staj, iş birliği veya sadece merhaba demek için bana ulaşabilirsin.
-          </motion.p>
-
-          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:max-w-xl">
-            <motion.a
-              {...fadeUp(0.15)}
-              href="mailto:mckavak10@gmail.com"
-              className="flex items-center gap-3 rounded-2xl border border-line bg-bg-2/60 p-5 transition-colors hover:border-accent/40"
-            >
-              <Mail size={18} className="text-accent" />
-              <div>
-                <p className="text-xs text-faint">E-posta</p>
-                <p className="text-sm font-medium">mckavak10@gmail.com</p>
-              </div>
-            </motion.a>
-            <motion.a
-              {...fadeUp(0.2)}
-              href="https://github.com/mehmetcankavak"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-3 rounded-2xl border border-line bg-bg-2/60 p-5 transition-colors hover:border-accent/40"
-            >
-              <Github size={18} className="text-accent" />
-              <div>
-                <p className="text-xs text-faint">GitHub</p>
-                <p className="text-sm font-medium">mehmetcankavak</p>
-              </div>
-            </motion.a>
-          </div>
-        </Section>
-      </main>
-
-      <footer className="border-t border-line px-6 py-8">
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 text-sm text-faint sm:flex-row">
-          <p>© {new Date().getFullYear()} Mehmet Can Kavak</p>
-          <a
-            href="https://github.com/mehmetcankavak"
-            target="_blank"
-            rel="noreferrer"
-            className="transition-colors hover:text-ink"
-          >
-            <Github size={18} />
-          </a>
-        </div>
-      </footer>
+      <motion.h2 {...fadeUp(0.05)} className="text-4xl font-bold tracking-tight sm:text-5xl">
+        {children}
+      </motion.h2>
     </div>
   )
 }
 
-export default App
+function Header() {
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+  return (
+    <header
+      className={`fixed inset-x-0 top-0 z-30 transition-all duration-300 ${
+        scrolled ? 'bg-bg-0/80 py-3 backdrop-blur-md' : 'py-5'
+      }`}
+    >
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6">
+        <a href="#home" className="text-lg font-semibold tracking-tight">
+          mck<span className="text-accent">.</span>
+        </a>
+        <ul className="hidden items-center gap-9 text-sm text-muted md:flex">
+          {NAV.map((n) => (
+            <li key={n.href}>
+              <a href={n.href} className="transition-colors hover:text-ink">{n.label}</a>
+            </li>
+          ))}
+        </ul>
+        <a href="#contact" className="btn-accent rounded-full px-5 py-2.5 text-sm font-semibold">
+          İletişime Geç
+        </a>
+      </nav>
+    </header>
+  )
+}
+
+function Hero() {
+  const typed = useTypewriter(['DevOps Engineer', 'Cloud Mühendisi', 'Sistem Tasarımcısı'])
+  return (
+    <section id="home" className="relative min-h-screen overflow-hidden">
+      <div className="hero-glow pointer-events-none absolute inset-0 -z-10" />
+      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 pt-36 pb-20 lg:grid-cols-2 lg:pt-40">
+        {/* Sol */}
+        <div>
+          <motion.p {...fadeUp()} className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-white/5 px-4 py-1.5 text-sm text-muted">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-accent" />
+            Merhaba! Ben Mehmet Can — Türkiye merkezli 🇹🇷
+          </motion.p>
+
+          <motion.h1 {...fadeUp(0.08)} className="text-5xl leading-[1.08] font-extrabold tracking-tight sm:text-6xl">
+            Backend Developer &
+            <br />
+            <span className="type-cursor text-accent">{typed}</span>
+          </motion.h1>
+
+          <motion.p {...fadeUp(0.16)} className="mt-7 max-w-md text-lg text-muted">
+            Sorunları çözen sistemler ve altyapılar kuruyorum — kodun yazımından
+            production’da izlenmesine kadar.
+          </motion.p>
+
+          <motion.div {...fadeUp(0.24)} className="mt-9 flex flex-wrap items-center gap-4">
+            <a href="#work" className="btn-accent inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold">
+              Çalışmalarımı Gör <ArrowRight size={16} />
+            </a>
+            <a href="#contact" className="inline-flex items-center gap-2 rounded-full border border-line px-6 py-3 text-sm font-medium text-muted transition-colors hover:text-ink">
+              İletişime Geç
+            </a>
+          </motion.div>
+
+          <motion.div {...fadeUp(0.32)} className="mt-12 flex gap-10">
+            {[
+              ['3+', 'Katmanlı Proje'],
+              ['7', 'DevOps Fazı'],
+              ['100%', 'IaC Kapsam'],
+            ].map(([v, l]) => (
+              <div key={l}>
+                <p className="text-2xl font-bold text-accent">{v}</p>
+                <p className="mt-1 text-xs tracking-wide text-faint uppercase">{l}</p>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Sağ — deploy terminali (referanstaki foto kartının yerine) */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94, rotate: -2 }}
+          animate={{ opacity: 1, scale: 1, rotate: 2 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative mx-auto w-full max-w-md"
+        >
+          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-accent/20 blur-3xl" />
+          <div className="overflow-hidden rounded-2xl border border-line bg-bg-1 shadow-2xl">
+            <div className="flex items-center gap-2 border-b border-line px-4 py-3">
+              <span className="h-3 w-3 rounded-full bg-red-400/80" />
+              <span className="h-3 w-3 rounded-full bg-yellow-400/80" />
+              <span className="h-3 w-3 rounded-full bg-green-400/80" />
+              <span className="ml-3 font-mono text-xs text-faint">deploy — main</span>
+              <span className="ml-auto inline-flex items-center gap-1.5 text-xs text-accent">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" /> LIVE
+              </span>
+            </div>
+            <div className="space-y-2 p-5 font-mono text-[13px] leading-relaxed">
+              <p className="text-muted"><span className="text-accent">➜</span> git push origin main</p>
+              <p className="text-faint">✓ test · ruff · pytest <span className="text-accent">passed</span></p>
+              <p className="text-faint">✓ docker build → push to ECR</p>
+              <p className="text-faint">✓ ssm deploy → EC2 (OIDC)</p>
+              <p className="text-faint">✓ cloudfront invalidation</p>
+              <p className="text-accent">● deployed in 23s <span className="type-cursor" /></p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Alt kayan şerit */}
+      <div className="relative border-y border-line bg-white/[0.02] py-4">
+        <div className="marquee-track">
+          {[...MARQUEE, ...MARQUEE].map((m, i) => (
+            <span key={i} className="mx-6 inline-flex items-center gap-6 text-sm font-medium text-faint">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" /> {m}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Work() {
+  return (
+    <section className="relative py-28">
+      <div className="section-glow pointer-events-none absolute inset-0 -z-10" />
+      <div className="mx-auto max-w-6xl px-6">
+        <Heading id="work" kicker="Portfolyo">
+          Çalışma<span className="text-accent">larım</span>
+        </Heading>
+        <Swiper
+          modules={[Pagination]}
+          pagination={{ clickable: true }}
+          grabCursor
+          spaceBetween={24}
+          breakpoints={{
+            0: { slidesPerView: 1.1, centeredSlides: true },
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 2.4 },
+          }}
+        >
+          {WORK.map((w) => (
+            <SwiperSlide key={w.n}>
+              <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-bg-1">
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <img
+                    src={w.img}
+                    alt={w.title}
+                    className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-bg-1 via-transparent to-transparent" />
+                  <span className="absolute top-4 left-4 rounded-full bg-black/50 px-3 py-1 text-xs font-medium text-accent backdrop-blur">
+                    {w.tag}
+                  </span>
+                  <span className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full border border-line bg-black/40 text-ink backdrop-blur transition-colors group-hover:bg-accent group-hover:text-bg-0">
+                    <ArrowUpRight size={16} />
+                  </span>
+                </div>
+                <div className="flex flex-1 flex-col p-6">
+                  <span className="font-mono text-3xl font-bold text-accent/90">{w.n}</span>
+                  <h3 className="mt-3 text-xl font-semibold">{w.title}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{w.detail}</p>
+                </div>
+              </article>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        <div className="mt-10 flex justify-center gap-6 text-sm">
+          <a
+            href="https://github.com/mehmetcankavak/TerminalProject"
+            target="_blank" rel="noreferrer"
+            className="inline-flex items-center gap-2 font-medium text-ink transition-colors hover:text-accent"
+          >
+            <SiGithub size={16} /> Kaynak Kodu <ArrowUpRight size={14} />
+          </a>
+          <a
+            href="http://51.20.93.124"
+            target="_blank" rel="noreferrer"
+            className="inline-flex items-center gap-2 font-medium text-ink transition-colors hover:text-accent"
+          >
+            Canlı Demo <ArrowUpRight size={14} />
+          </a>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Services() {
+  const [open, setOpen] = useState(0)
+  return (
+    <section className="py-28">
+      <div className="mx-auto max-w-4xl px-6">
+        <Heading id="services" kicker="Ne Sunuyorum">
+          Neler <span className="text-accent">Yaparım</span>
+        </Heading>
+        <div className="space-y-4">
+          {SERVICES.map((s, i) => {
+            const Icon = s.icon
+            const active = open === i
+            return (
+              <motion.div
+                key={s.title}
+                {...fadeUp(0.06 * i)}
+                className={`overflow-hidden rounded-2xl border transition-colors ${
+                  active ? 'border-accent/40 bg-bg-1' : 'border-line bg-bg-1/50'
+                }`}
+              >
+                <button
+                  onClick={() => setOpen(active ? -1 : i)}
+                  className="flex w-full items-center gap-4 px-6 py-5 text-left"
+                >
+                  <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${active ? 'bg-accent text-bg-0' : 'bg-white/5 text-accent'}`}>
+                    <Icon size={20} />
+                  </span>
+                  <span className="text-lg font-semibold">{s.title}</span>
+                  <ChevronDown
+                    size={20}
+                    className={`ml-auto text-faint transition-transform ${active ? 'rotate-180 text-accent' : ''}`}
+                  />
+                </button>
+                {active && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    transition={{ duration: 0.35 }}
+                    className="px-6 pb-6"
+                  >
+                    <p className="max-w-2xl pl-15 text-muted">{s.detail}</p>
+                    <div className="mt-4 flex flex-wrap gap-2 pl-15">
+                      {s.tags.map((t) => (
+                        <span key={t} className="rounded-full border border-accent/30 bg-accent/5 px-3 py-1 text-xs text-accent">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </motion.div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Skills() {
+  return (
+    <section className="relative py-28">
+      <div className="section-glow pointer-events-none absolute inset-0 -z-10" />
+      <div className="mx-auto max-w-6xl px-6">
+        <Heading id="skills" kicker="Teknolojiler">
+          Yetenek<span className="text-accent">lerim</span>
+        </Heading>
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          {SKILLS.map((s, i) => (
+            <motion.div
+              key={s.group}
+              {...fadeUp(0.08 * i)}
+              className="rounded-3xl border border-line bg-bg-1 p-7"
+            >
+              <h3 className="mb-6 flex items-center gap-2 text-lg font-semibold">
+                <span className="h-4 w-1 rounded-full bg-accent" />
+                {s.group}
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {s.items.map((it) => {
+                  const Icon = it.icon
+                  return (
+                    <div
+                      key={it.label}
+                      className="flex items-center gap-3 rounded-xl border border-line-soft bg-white/[0.02] px-3.5 py-3 transition-colors hover:border-accent/30"
+                    >
+                      <Icon size={22} style={{ color: it.color }} />
+                      <span className="text-sm text-muted">{it.label}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Contact() {
+  return (
+    <section className="py-28">
+      <div className="mx-auto max-w-5xl px-6">
+        <Heading id="contact" kicker="İletişim">
+          Bir proje <span className="text-accent">konuşalım</span>
+        </Heading>
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <motion.a
+            {...fadeUp(0.05)}
+            href="mailto:mckavak10@gmail.com"
+            className="group flex items-center gap-4 rounded-2xl border border-line bg-bg-1 p-6 transition-colors hover:border-accent/40"
+          >
+            <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent">
+              <Mail size={22} />
+            </span>
+            <div>
+              <p className="text-xs tracking-wide text-faint uppercase">E-posta</p>
+              <p className="font-medium">mckavak10@gmail.com</p>
+            </div>
+            <ArrowUpRight size={18} className="ml-auto text-faint transition-colors group-hover:text-accent" />
+          </motion.a>
+
+          <motion.a
+            {...fadeUp(0.12)}
+            href="https://github.com/mehmetcankavak"
+            target="_blank" rel="noreferrer"
+            className="group flex items-center gap-4 rounded-2xl border border-line bg-bg-1 p-6 transition-colors hover:border-accent/40"
+          >
+            <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent">
+              <SiGithub size={22} />
+            </span>
+            <div>
+              <p className="text-xs tracking-wide text-faint uppercase">GitHub</p>
+              <p className="font-medium">mehmetcankavak</p>
+            </div>
+            <ArrowUpRight size={18} className="ml-auto text-faint transition-colors group-hover:text-accent" />
+          </motion.a>
+
+          <motion.div
+            {...fadeUp(0.18)}
+            className="flex items-center gap-4 rounded-2xl border border-line bg-bg-1 p-6 sm:col-span-2"
+          >
+            <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent">
+              <MapPin size={22} />
+            </span>
+            <div>
+              <p className="text-xs tracking-wide text-faint uppercase">Konum</p>
+              <p className="font-medium">Türkiye · Uzaktan çalışmaya açık</p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Footer() {
+  return (
+    <footer className="relative overflow-hidden border-t border-line py-20">
+      <div className="hero-glow pointer-events-none absolute inset-0 -z-10 opacity-60" />
+      <div className="mx-auto max-w-5xl px-6 text-center">
+        <motion.h2 {...fadeUp()} className="mx-auto max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
+          Birlikte bir şeyler <span className="text-accent">inşa edelim</span>.
+        </motion.h2>
+        <motion.a
+          {...fadeUp(0.1)}
+          href="mailto:mckavak10@gmail.com"
+          className="btn-accent mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold"
+        >
+          Mesaj Gönder <ArrowRight size={16} />
+        </motion.a>
+        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-line pt-8 text-sm text-faint sm:flex-row">
+          <p>© {new Date().getFullYear()} Mehmet Can Kavak</p>
+          <a href="https://github.com/mehmetcankavak" target="_blank" rel="noreferrer" className="transition-colors hover:text-ink">
+            <SiGithub size={20} />
+          </a>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
+export default function App() {
+  return (
+    <>
+      <Header />
+      <main>
+        <Hero />
+        <Work />
+        <Services />
+        <Skills />
+        <Contact />
+      </main>
+      <Footer />
+    </>
+  )
+}

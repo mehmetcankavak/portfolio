@@ -1,23 +1,25 @@
 @import "tailwindcss";
 
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
-@import "@fontsource/inter/700.css";
-@import "@fontsource/inter/800.css";
+@import "@fontsource/poppins/300.css";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+@import "@fontsource/poppins/800.css";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: "Poppins", ui-sans-serif, system-ui, -apple-system, sans-serif;
 
-  --color-bg-0: #030303;
-  --color-bg-1: #0a0a0a;
-  --color-bg-2: #0f1014;
-  --color-accent: #00e87a;
+  --color-bg-0: #060a08;
+  --color-bg-1: #0b120e;
+  --color-bg-2: #101a14;
+  --color-accent: #4ade80;
+  --color-accent-bright: #7dfba3;
   --color-line: rgba(255, 255, 255, 0.08);
   --color-line-soft: rgba(255, 255, 255, 0.05);
-  --color-ink: rgba(255, 255, 255, 0.92);
-  --color-muted: rgba(255, 255, 255, 0.5);
-  --color-faint: rgba(255, 255, 255, 0.28);
+  --color-ink: rgba(255, 255, 255, 0.95);
+  --color-muted: rgba(255, 255, 255, 0.55);
+  --color-faint: rgba(255, 255, 255, 0.32);
 }
 
 html {
@@ -32,17 +34,73 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
 ::selection {
   background-color: var(--color-accent);
-  color: #030303;
+  color: #060a08;
 }
 
-.glow {
-  background: radial-gradient(
-    60% 50% at 50% 0%,
-    rgba(0, 232, 122, 0.16) 0%,
-    rgba(0, 232, 122, 0) 70%
-  );
+/* Referanstaki gibi hero'nun arkasında yumuşak yeşil ışıma */
+.hero-glow {
+  background:
+    radial-gradient(50% 55% at 20% 5%, rgba(74, 222, 128, 0.22) 0%, transparent 60%),
+    radial-gradient(45% 50% at 90% 0%, rgba(74, 222, 128, 0.12) 0%, transparent 55%);
+}
+
+.section-glow {
+  background: radial-gradient(60% 60% at 50% 0%, rgba(74, 222, 128, 0.08) 0%, transparent 70%);
+}
+
+/* Yeşil gradient buton — referanstaki "Contact me" gibi */
+.btn-accent {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: #05130a;
+  box-shadow: 0 8px 30px -8px rgba(74, 222, 128, 0.5);
+}
+
+/* Daktilo imleci */
+.type-cursor::after {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  margin-left: 4px;
+  vertical-align: -0.08em;
+  background: var(--color-accent);
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Dönen "keşfet" rozeti */
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+.spin-badge { animation: spin-slow 14s linear infinite; }
+
+/* Swiper görünümü */
+.swiper { padding-bottom: 56px !important; overflow: visible !important; }
+.swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.25) !important;
+  opacity: 1 !important;
+}
+.swiper-pagination-bullet-active {
+  background: var(--color-accent) !important;
+  width: 22px !important;
+  border-radius: 4px !important;
+}
+.swiper-slide { height: auto !important; }
+
+/* Kayan şerit (marquee) */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
 }
