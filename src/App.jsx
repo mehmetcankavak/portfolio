@@ -5,15 +5,15 @@ import { Pagination } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import {
-  Mail, MapPin, ArrowUpRight, ArrowRight, ArrowDown, ChevronDown,
-  Server, Cloud, Terminal as TerminalIcon,
+  Mail, MapPin, Phone, ArrowUpRight, ArrowRight, ArrowDown, ChevronDown,
+  Server, Cloud, Code2, Terminal as TerminalIcon,
 } from 'lucide-react'
 import {
   SiPython, SiFastapi, SiPostgresql, SiRedis,
   SiReact, SiVite, SiTailwindcss, SiJavascript,
-  SiTerraform, SiDocker, SiGithubactions, SiGithub,
+  SiTerraform, SiDocker, SiGithubactions, SiGithub, SiInstagram,
 } from 'react-icons/si'
-import { FaAws } from 'react-icons/fa'
+import { FaAws, FaLinkedinIn } from 'react-icons/fa'
 
 /* ── Typewriter ─────────────────────────────────────────────── */
 function useTypewriter(words, { type = 85, del = 45, hold = 1500 } = {}) {
@@ -48,9 +48,19 @@ const NAV = [
   { href: '#skills', label: 'Skills' },
 ]
 
-const MARQUEE = [
-  SiPython, SiFastapi, SiPostgresql, SiRedis, FaAws, SiTerraform,
-  SiDocker, SiGithubactions, SiReact, SiVite, SiJavascript, SiTailwindcss,
+const TECH = [
+  { icon: SiPython, color: '#4B8BBE' },
+  { icon: SiFastapi, color: '#05998b' },
+  { icon: SiPostgresql, color: '#4169E1' },
+  { icon: SiRedis, color: '#FF4438' },
+  { icon: FaAws, color: '#FF9900' },
+  { icon: SiTerraform, color: '#7B42BC' },
+  { icon: SiDocker, color: '#2496ED' },
+  { icon: SiGithubactions, color: '#2088FF' },
+  { icon: SiReact, color: '#61DAFB' },
+  { icon: SiVite, color: '#646CFF' },
+  { icon: SiJavascript, color: '#F7DF1E' },
+  { icon: SiTailwindcss, color: '#38BDF8' },
 ]
 
 const WORK = [
@@ -91,26 +101,38 @@ const SERVICES = [
 
 const SKILLS = [
   {
-    group: 'Backend',
+    group: 'Backend', icon: Server,
     items: [
-      { icon: SiPython, label: 'Python' }, { icon: SiFastapi, label: 'FastAPI' },
-      { icon: SiPostgresql, label: 'PostgreSQL' }, { icon: SiRedis, label: 'Redis' },
+      { icon: SiPython, label: 'Python', color: '#4B8BBE' },
+      { icon: SiFastapi, label: 'FastAPI', color: '#05998b' },
+      { icon: SiPostgresql, label: 'PostgreSQL', color: '#4169E1' },
+      { icon: SiRedis, label: 'Redis', color: '#FF4438' },
     ],
   },
   {
-    group: 'Frontend',
+    group: 'Frontend', icon: Code2,
     items: [
-      { icon: SiReact, label: 'React' }, { icon: SiVite, label: 'Vite' },
-      { icon: SiJavascript, label: 'JavaScript' }, { icon: SiTailwindcss, label: 'Tailwind' },
+      { icon: SiReact, label: 'React', color: '#61DAFB' },
+      { icon: SiVite, label: 'Vite', color: '#646CFF' },
+      { icon: SiJavascript, label: 'JavaScript', color: '#F7DF1E' },
+      { icon: SiTailwindcss, label: 'Tailwind', color: '#38BDF8' },
     ],
   },
   {
-    group: 'DevOps & Cloud',
+    group: 'DevOps & Cloud', icon: Cloud,
     items: [
-      { icon: FaAws, label: 'AWS' }, { icon: SiTerraform, label: 'Terraform' },
-      { icon: SiDocker, label: 'Docker' }, { icon: SiGithubactions, label: 'GitHub Actions' },
+      { icon: FaAws, label: 'AWS', color: '#FF9900' },
+      { icon: SiTerraform, label: 'Terraform', color: '#7B42BC' },
+      { icon: SiDocker, label: 'Docker', color: '#2496ED' },
+      { icon: SiGithubactions, label: 'GitHub Actions', color: '#2088FF' },
     ],
   },
+]
+
+const SOCIALS = [
+  { icon: SiInstagram, href: 'https://instagram.com/', label: 'Instagram' },
+  { icon: FaLinkedinIn, href: 'https://linkedin.com/', label: 'LinkedIn' },
+  { icon: SiGithub, href: 'https://github.com/mehmetcankavak', label: 'GitHub' },
 ]
 
 /* ── Shared heading ─────────────────────────────────────────── */
@@ -118,9 +140,7 @@ function Heading({ id, kicker, plain, strong }) {
   return (
     <div id={id} className="mb-16 text-center">
       {kicker && (
-        <motion.p {...fadeUp()} className="mb-3 text-xs font-medium tracking-[0.3em] text-faint uppercase">
-          {kicker}
-        </motion.p>
+        <motion.p {...fadeUp()} className="mb-3 text-xs font-medium tracking-[0.3em] text-faint uppercase">{kicker}</motion.p>
       )}
       <motion.h2 {...fadeUp(0.05)} className="text-4xl font-bold tracking-tight sm:text-5xl">
         <span className="text-muted">{plain}</span> {strong}
@@ -142,9 +162,7 @@ function Header() {
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6">
         <a href="#home" className="text-lg font-semibold tracking-tight">Mehmet Can Kavak</a>
         <ul className="hidden items-center gap-9 text-sm text-muted md:flex">
-          {NAV.map((n) => (
-            <li key={n.href}><a href={n.href} className="transition-colors hover:text-ink">{n.label}</a></li>
-          ))}
+          {NAV.map((n) => (<li key={n.href}><a href={n.href} className="transition-colors hover:text-ink">{n.label}</a></li>))}
         </ul>
         <a href="#contact" className="btn-invert rounded-full px-5 py-2.5 text-sm font-semibold transition-colors">Contact Me</a>
       </nav>
@@ -159,7 +177,7 @@ function Hero() {
     <section id="home" className="relative overflow-hidden">
       <div className="hero-glow pointer-events-none absolute inset-0 -z-10" />
       <div className="mx-auto flex max-w-3xl flex-col items-center px-6 pt-40 pb-16 text-center sm:pt-48">
-        <motion.p {...fadeUp()} className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-white/5 px-4 py-1.5 text-sm text-muted">
+        <motion.p {...fadeUp()} className="mb-6 flex items-center gap-2 text-sm text-muted">
           <span className="h-2 w-2 animate-pulse rounded-full bg-white/70" />
           Hi! I'm Mehmet Can — Based in Turkey 🇹🇷
         </motion.p>
@@ -184,14 +202,14 @@ function Hero() {
           </a>
         </motion.div>
 
-        {/* Tilted deploy terminal + rotating scroll badge */}
+        {/* Tilted deploy terminal + clickable scroll badge */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="relative mt-16 w-full max-w-lg"
         >
-          <div className="overflow-hidden rounded-2xl border border-line bg-bg-1 text-left shadow-2xl">
+          <div className="overflow-hidden rounded-3xl border border-line bg-card text-left shadow-2xl">
             <div className="flex items-center gap-2 border-b border-line px-4 py-3">
               <span className="h-3 w-3 rounded-full bg-white/25" />
               <span className="h-3 w-3 rounded-full bg-white/20" />
@@ -210,27 +228,29 @@ function Hero() {
             </div>
           </div>
 
-          <div className="spin-badge absolute -bottom-8 -right-6 hidden h-24 w-24 sm:block">
-            <svg viewBox="0 0 100 100" className="h-full w-full fill-faint">
-              <defs><path id="circle" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" /></defs>
-              <text className="text-[11px] tracking-[0.25em] uppercase">
-                <textPath href="#circle">scroll down • explore more • </textPath>
-              </text>
-            </svg>
-          </div>
-          <div className="absolute -bottom-8 -right-6 hidden h-24 w-24 items-center justify-center sm:flex">
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-bg-0">
-              <ArrowDown size={18} />
+          <a href="#work" aria-label="Scroll to work" className="group absolute -bottom-8 -right-6 hidden h-24 w-24 sm:block">
+            <span className="spin-badge absolute inset-0 block">
+              <svg viewBox="0 0 100 100" className="h-full w-full fill-faint">
+                <defs><path id="circle" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" /></defs>
+                <text className="text-[11px] tracking-[0.25em] uppercase">
+                  <textPath href="#circle">scroll down • explore more • </textPath>
+                </text>
+              </svg>
             </span>
-          </div>
+            <span className="absolute inset-0 flex items-center justify-center">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-bg-0 transition-transform group-hover:translate-y-0.5">
+                <ArrowDown size={18} />
+              </span>
+            </span>
+          </a>
         </motion.div>
       </div>
 
-      {/* Icon marquee */}
+      {/* Icon marquee — live brand colors */}
       <div className="marquee-mask relative border-y border-line bg-white/[0.015] py-6">
         <div className="marquee-track">
-          {[...MARQUEE, ...MARQUEE].map((Icon, i) => (
-            <span key={i} className="mx-8 text-faint transition-colors hover:text-ink">
+          {[...TECH, ...TECH].map(({ icon: Icon, color }, i) => (
+            <span key={i} className="mx-8" style={{ color }}>
               <Icon size={30} />
             </span>
           ))}
@@ -251,18 +271,14 @@ function Work() {
           pagination={{ clickable: true }}
           grabCursor
           spaceBetween={24}
-          breakpoints={{
-            0: { slidesPerView: 1.1, centeredSlides: true },
-            768: { slidesPerView: 2 },
-            1024: { slidesPerView: 2.4 },
-          }}
+          breakpoints={{ 0: { slidesPerView: 1.1, centeredSlides: true }, 768: { slidesPerView: 2 }, 1024: { slidesPerView: 2.4 } }}
         >
           {WORK.map((w) => (
             <SwiperSlide key={w.n}>
-              <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-bg-1">
+              <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-card">
                 <div className="relative aspect-[16/10] overflow-hidden">
-                  <img src={w.img} alt={w.title} className="h-full w-full object-cover object-top grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-[0.4]" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-bg-1 via-bg-1/10 to-transparent" />
+                  <img src={w.img} alt={w.title} className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent" />
                   <span className="absolute top-4 left-4 rounded-full bg-black/50 px-3 py-1 text-xs font-medium text-ink backdrop-blur">{w.tag}</span>
                   <span className="absolute top-4 right-4 flex h-9 w-9 items-center justify-center rounded-full border border-line bg-black/40 text-ink backdrop-blur transition-colors group-hover:bg-white group-hover:text-bg-0">
                     <ArrowUpRight size={16} />
@@ -303,9 +319,9 @@ function Services() {
             const Icon = s.icon
             const active = open === i
             return (
-              <motion.div key={s.title} {...fadeUp(0.06 * i)} className={`overflow-hidden rounded-2xl border transition-colors ${active ? 'border-white/25 bg-bg-1' : 'border-line bg-bg-1/50'}`}>
+              <motion.div key={s.title} {...fadeUp(0.06 * i)} className={`overflow-hidden rounded-3xl border transition-colors ${active ? 'border-white/20 bg-card' : 'border-line bg-card/60'}`}>
                 <button onClick={() => setOpen(active ? -1 : i)} className="flex w-full items-center gap-4 px-6 py-5 text-left">
-                  <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${active ? 'bg-white text-bg-0' : 'bg-white/5 text-ink'}`}>
+                  <span className={`flex h-11 w-11 items-center justify-center rounded-2xl ${active ? 'bg-white text-bg-0' : 'bg-white/5 text-ink'}`}>
                     <Icon size={20} />
                   </span>
                   <span className="text-lg font-semibold">{s.title}</span>
@@ -315,9 +331,7 @@ function Services() {
                   <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} transition={{ duration: 0.35 }} className="px-6 pb-6">
                     <p className="max-w-2xl pl-15 text-muted">{s.detail}</p>
                     <div className="mt-4 flex flex-wrap gap-2 pl-15">
-                      {s.tags.map((t) => (
-                        <span key={t} className="rounded-full border border-line px-3 py-1 text-xs text-muted">{t}</span>
-                      ))}
+                      {s.tags.map((t) => (<span key={t} className="rounded-full border border-line px-3 py-1 text-xs text-muted">{t}</span>))}
                     </div>
                   </motion.div>
                 )}
@@ -330,31 +344,38 @@ function Services() {
   )
 }
 
-/* ── Skills ─────────────────────────────────────────────────── */
+/* ── Skills (gray cards, white titles, colored logos) ───────── */
 function Skills() {
   return (
     <section className="py-28">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="mx-auto max-w-4xl px-6">
         <Heading id="skills" kicker="Toolbox" plain="My" strong="Skills" />
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-          {SKILLS.map((s, i) => (
-            <motion.div key={s.group} {...fadeUp(0.08 * i)} className="rounded-3xl border border-line bg-bg-1 p-7">
-              <h3 className="mb-6 flex items-center gap-2 text-lg font-semibold">
-                <span className="h-4 w-1 rounded-full bg-white/40" />{s.group}
-              </h3>
-              <div className="grid grid-cols-2 gap-3">
-                {s.items.map((it) => {
-                  const Icon = it.icon
-                  return (
-                    <div key={it.label} className="flex items-center gap-3 rounded-xl border border-line-soft bg-white/[0.02] px-3.5 py-3 transition-colors hover:border-white/20">
-                      <Icon size={22} className="text-ink" />
-                      <span className="text-sm text-muted">{it.label}</span>
-                    </div>
-                  )
-                })}
-              </div>
-            </motion.div>
-          ))}
+        <p className="mx-auto -mt-10 mb-14 max-w-lg text-center text-muted">
+          The technologies I use to design, build and ship reliable systems.
+        </p>
+        <div className="space-y-5">
+          {SKILLS.map((s, i) => {
+            const Cat = s.icon
+            return (
+              <motion.div key={s.group} {...fadeUp(0.08 * i)} className="rounded-3xl border border-line bg-card p-7 md:flex md:items-center md:gap-10">
+                <div className="mb-6 flex items-center gap-3 md:mb-0 md:w-56 md:shrink-0">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/5 text-ink"><Cat size={20} /></span>
+                  <h3 className="text-xl font-semibold text-ink">{s.group}</h3>
+                </div>
+                <div className="flex flex-wrap gap-x-8 gap-y-4">
+                  {s.items.map((it) => {
+                    const Icon = it.icon
+                    return (
+                      <div key={it.label} className="flex items-center gap-2.5">
+                        <Icon size={22} style={{ color: it.color }} />
+                        <span className="text-sm text-muted">{it.label}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </motion.div>
+            )
+          })}
         </div>
       </div>
     </section>
@@ -370,38 +391,42 @@ function Contact() {
     const body = encodeURIComponent(`${form.message}\n\n— ${form.name} (${form.email})`)
     window.location.href = `mailto:mckavak10@gmail.com?subject=${subject}&body=${body}`
   }
-  const field = 'w-full rounded-xl border border-line bg-white/[0.02] px-4 py-3 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-white/30'
+  const field = 'w-full rounded-2xl border border-line bg-card px-4 py-3.5 text-sm text-ink placeholder:text-faint outline-none transition-colors focus:border-white/30'
+  const info = [
+    { icon: Mail, label: 'Email', value: 'mckavak10@gmail.com', href: 'mailto:mckavak10@gmail.com' },
+    { icon: Phone, label: 'Phone', value: '0534 364 67 19', href: 'tel:+905343646719' },
+    { icon: MapPin, label: 'Location', value: 'Turkey · Open to remote' },
+  ]
   return (
     <section className="py-28">
       <div className="mx-auto max-w-5xl px-6">
         <Heading id="contact" kicker="Get in Touch" plain="Contact" strong="Me" />
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-          {/* Form */}
           <motion.form {...fadeUp()} onSubmit={submit} className="space-y-4">
             <input required placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={field} />
             <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={field} />
             <textarea required rows={5} placeholder="Message" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className={`${field} resize-none`} />
-            <button type="submit" className="btn-invert inline-flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-colors">
+            <button type="submit" className="btn-invert inline-flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-sm font-semibold transition-colors">
               Send Message <ArrowRight size={16} />
             </button>
           </motion.form>
 
-          {/* Info */}
           <div className="flex flex-col gap-4">
-            <motion.a {...fadeUp(0.08)} href="mailto:mckavak10@gmail.com" className="group flex items-center gap-4 rounded-2xl border border-line bg-bg-1 p-5 transition-colors hover:border-white/25">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/5 text-ink"><Mail size={20} /></span>
-              <div><p className="text-xs tracking-wide text-faint uppercase">Email</p><p className="text-sm font-medium">mckavak10@gmail.com</p></div>
-              <ArrowUpRight size={18} className="ml-auto text-faint transition-colors group-hover:text-ink" />
-            </motion.a>
-            <motion.a {...fadeUp(0.14)} href="https://github.com/mehmetcankavak" target="_blank" rel="noreferrer" className="group flex items-center gap-4 rounded-2xl border border-line bg-bg-1 p-5 transition-colors hover:border-white/25">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/5 text-ink"><SiGithub size={20} /></span>
-              <div><p className="text-xs tracking-wide text-faint uppercase">GitHub</p><p className="text-sm font-medium">mehmetcankavak</p></div>
-              <ArrowUpRight size={18} className="ml-auto text-faint transition-colors group-hover:text-ink" />
-            </motion.a>
-            <motion.div {...fadeUp(0.2)} className="flex items-center gap-4 rounded-2xl border border-line bg-bg-1 p-5">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/5 text-ink"><MapPin size={20} /></span>
-              <div><p className="text-xs tracking-wide text-faint uppercase">Location</p><p className="text-sm font-medium">Turkey · Open to remote</p></div>
-            </motion.div>
+            {info.map((c, i) => {
+              const Icon = c.icon
+              const inner = (
+                <>
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/5 text-ink"><Icon size={20} /></span>
+                  <div><p className="text-xs tracking-wide text-faint uppercase">{c.label}</p><p className="text-sm font-medium">{c.value}</p></div>
+                  {c.href && <ArrowUpRight size={18} className="ml-auto text-faint transition-colors group-hover:text-ink" />}
+                </>
+              )
+              return c.href ? (
+                <motion.a key={c.label} {...fadeUp(0.08 * i)} href={c.href} className="group flex items-center gap-4 rounded-3xl border border-line bg-card p-5 transition-colors hover:border-white/25">{inner}</motion.a>
+              ) : (
+                <motion.div key={c.label} {...fadeUp(0.08 * i)} className="flex items-center gap-4 rounded-3xl border border-line bg-card p-5">{inner}</motion.div>
+              )
+            })}
           </div>
         </div>
       </div>
@@ -409,25 +434,34 @@ function Contact() {
   )
 }
 
-/* ── Footer ─────────────────────────────────────────────────── */
+/* ── Footer (two columns) ───────────────────────────────────── */
 function Footer() {
+  const links = NAV.filter((n) => n.href !== '#home')
   return (
     <footer className="relative overflow-hidden border-t border-line py-20">
       <div className="hero-glow pointer-events-none absolute inset-0 -z-10 opacity-70" />
-      <div className="mx-auto max-w-5xl px-6 text-center">
-        <motion.h2 {...fadeUp()} className="mx-auto max-w-3xl text-3xl leading-tight font-extrabold tracking-tight uppercase sm:text-5xl">
-          Let's build something<br />great together.
-        </motion.h2>
-        <motion.a {...fadeUp(0.1)} href="mailto:mckavak10@gmail.com" className="btn-invert mt-9 inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-colors">
-          Send a Message <ArrowRight size={16} />
-        </motion.a>
-        <div className="mt-16 flex flex-col items-center justify-between gap-6 border-t border-line pt-8 sm:flex-row">
-          <ul className="flex gap-7 text-sm text-muted">
-            {NAV.map((n) => <li key={n.href}><a href={n.href} className="transition-colors hover:text-ink">{n.label}</a></li>)}
-          </ul>
-          <a href="https://github.com/mehmetcankavak" target="_blank" rel="noreferrer" className="text-muted transition-colors hover:text-ink"><SiGithub size={20} /></a>
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:items-start">
+          <motion.h2 {...fadeUp()} className="max-w-md text-3xl leading-tight font-extrabold tracking-tight uppercase sm:text-4xl">
+            Collaborate with Mehmet Can and start your journey in software today.
+          </motion.h2>
+          <motion.div {...fadeUp(0.1)} className="md:justify-self-end md:text-right">
+            <ul className="flex flex-wrap gap-7 text-sm text-muted md:justify-end">
+              {links.map((n) => (<li key={n.href}><a href={n.href} className="transition-colors hover:text-ink">{n.label}</a></li>))}
+            </ul>
+            <div className="mt-6 flex gap-3 md:justify-end">
+              {SOCIALS.map(({ icon: Icon, href, label }) => (
+                <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}
+                   className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-white/25 hover:text-ink">
+                  <Icon size={18} />
+                </a>
+              ))}
+            </div>
+          </motion.div>
         </div>
-        <p className="mt-6 text-xs text-faint">© {new Date().getFullYear()} Mehmet Can Kavak. All rights reserved.</p>
+        <div className="mt-16 border-t border-line pt-8 text-center text-xs text-faint">
+          © {new Date().getFullYear()} Mehmet Can Kavak. All rights reserved.
+        </div>
       </div>
     </footer>
   )
