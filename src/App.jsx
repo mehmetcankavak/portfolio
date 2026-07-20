@@ -151,20 +151,56 @@ function Heading({ id, kicker, plain, strong }) {
 /* ── Header ─────────────────────────────────────────────────── */
 function Header() {
   const [scrolled, setScrolled] = useState(false)
+  const [open, setOpen] = useState(false)
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [open])
   return (
     <header className={`fixed inset-x-0 top-0 z-30 transition-all duration-300 ${scrolled ? 'py-3' : 'py-5'}`}>
-      <nav className={`mx-auto flex max-w-6xl items-center justify-between rounded-full px-6 py-3 transition-all duration-300 ${scrolled ? 'liquid-glass mx-4 sm:mx-auto' : ''}`}>
-        <a href="#home" className="font-display text-2xl tracking-tight">Mehmet Can Kavak</a>
+      <nav className={`mx-auto flex max-w-6xl items-center justify-between rounded-full px-6 py-3 transition-all duration-300 ${scrolled || open ? 'liquid-glass mx-4 sm:mx-auto' : ''}`}>
+        <a href="#home" className="font-display text-2xl tracking-tight" onClick={() => setOpen(false)}>Mehmet Can Kavak</a>
         <ul className="hidden items-center gap-9 text-sm font-medium text-muted md:flex">
           {NAV.map((n) => (<li key={n.href}><a href={n.href} className="transition-colors hover:text-ink">{n.label}</a></li>))}
         </ul>
-        <a href="#contact" className="btn-invert rounded-full px-5 py-2.5 text-sm font-semibold transition-colors">Contact Me</a>
+        <a href="#contact" className="btn-invert hidden rounded-full px-5 py-2.5 text-sm font-semibold transition-colors md:inline-flex">Contact Me</a>
+        <button
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          onClick={() => setOpen((v) => !v)}
+          className="relative flex h-9 w-9 items-center justify-center text-ink md:hidden"
+        >
+          <span className={`absolute h-[1.5px] w-5 bg-current transition-transform duration-300 ${open ? 'rotate-45' : '-translate-y-[5px]'}`} />
+          <span className={`absolute h-[1.5px] w-5 bg-current transition-all duration-300 ${open ? 'opacity-0' : 'opacity-100'}`} />
+          <span className={`absolute h-[1.5px] w-5 bg-current transition-transform duration-300 ${open ? '-rotate-45' : 'translate-y-[5px]'}`} />
+        </button>
       </nav>
+
+      {open && (
+        <motion.div
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          className="liquid-glass mx-4 mt-3 rounded-3xl px-6 py-6 md:hidden"
+        >
+          <ul className="flex flex-col gap-1 text-base font-medium text-muted">
+            {NAV.map((n) => (
+              <li key={n.href}>
+                <a href={n.href} onClick={() => setOpen(false)} className="block rounded-xl px-3 py-3 transition-colors hover:text-ink">
+                  {n.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a href="#contact" onClick={() => setOpen(false)} className="btn-invert mt-4 flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-colors">
+            Contact Me
+          </a>
+        </motion.div>
+      )}
     </header>
   )
 }
