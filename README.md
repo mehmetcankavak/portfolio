@@ -1,3 +1,20 @@
+# Portfolio — Mehmet Can Kavak
+
+Kişisel portfolio sitem. Backend & DevOps odaklı çalışmalarımı, projelerimi ve yeteneklerimi tanıttığım, monokrom/temiz tasarımlı tek sayfa React uygulaması.
+
+**Canlı:** https://dgkkxhdks4gjt.cloudfront.net
+
+![Screenshot](docs/screenshot.png)
+
+## Tech Stack
+
+- React 19 + Vite + TypeScript
+- Tailwind CSS v4
+- Framer Motion (animasyonlar), Swiper
+- AWS S3 + CloudFront üzerinde barındırılıyor
+
+---
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
